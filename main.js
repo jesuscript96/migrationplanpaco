@@ -6,10 +6,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavbarScroll();
   initMobileMenu();
   initPhaseStepInteractions();
+  initWeeklyCalendar();
   initFeaturedDeliverables();
   initDeliverableCatalogue();
   initDepartmentPlans();
   initModuleExpanders();
+  initResourcesEstimate();
+  initCollapsibleSections();
   initSmoothScrollLinks();
 });
 
@@ -738,7 +741,67 @@ function initModuleExpanders() {
 }
 
 /* ==========================================================================
-   8. Smooth Scrolling para enlaces de navegación
+   8. Secciones desplegables (acordeón)
+   ========================================================================== */
+function setSectionOpen(section, open) {
+  const header = section.querySelector('.section-header');
+  section.classList.toggle('open', open);
+  if (header) header.setAttribute('aria-expanded', String(open));
+}
+
+function initCollapsibleSections() {
+  const sections = document.querySelectorAll('.collapsible-section');
+
+  sections.forEach(section => {
+    const containerWidth = section.querySelector('.container-width');
+    const header = section.querySelector('.section-header');
+    if (!containerWidth || !header) return;
+
+    // Envolver el texto de la cabecera y añadir el chevron
+    const textWrap = document.createElement('div');
+    textWrap.className = 'section-header-text';
+    while (header.firstChild) textWrap.appendChild(header.firstChild);
+    header.appendChild(textWrap);
+
+    const chevron = document.createElement('span');
+    chevron.className = 'section-chevron';
+    chevron.innerHTML = '<i class="bi bi-chevron-down"></i>';
+    header.appendChild(chevron);
+
+    // Envolver todo el contenido posterior a la cabecera en el contenedor colapsable
+    const collapse = document.createElement('div');
+    collapse.className = 'section-collapse';
+    const inner = document.createElement('div');
+    inner.className = 'section-collapse-inner';
+
+    let node = header.nextSibling;
+    while (node) {
+      const next = node.nextSibling;
+      inner.appendChild(node);
+      node = next;
+    }
+    collapse.appendChild(inner);
+    containerWidth.appendChild(collapse);
+
+    // Accesibilidad e interacción
+    header.setAttribute('role', 'button');
+    header.setAttribute('tabindex', '0');
+    header.setAttribute('aria-expanded', 'false');
+
+    header.addEventListener('click', () => {
+      setSectionOpen(section, !section.classList.contains('open'));
+    });
+    header.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        setSectionOpen(section, !section.classList.contains('open'));
+      }
+    });
+  });
+}
+
+/* ==========================================================================
+   9. Smooth Scrolling + apertura de la sección destino
    ========================================================================== */
 function initSmoothScrollLinks() {
   const links = document.querySelectorAll('a[href^="#"]');
@@ -754,6 +817,11 @@ function initSmoothScrollLinks() {
 
       e.preventDefault();
 
+      // Si el destino es una sección desplegable, ábrela antes de desplazarte
+      if (targetEl.classList.contains('collapsible-section')) {
+        setSectionOpen(targetEl, true);
+      }
+
       const targetPosition = targetEl.getBoundingClientRect().top + window.scrollY - navbarHeight;
       window.scrollTo({
         top: targetPosition,
@@ -761,4 +829,219 @@ function initSmoothScrollLinks() {
       });
     });
   });
+}
+
+/* ==========================================================================
+   9. Calendario semana a semana (tarjetas + detalle)
+   ========================================================================== */
+
+// Agrupación de semanas por mes (lanzamiento en septiembre)
+const calendarMonths = [
+  { name: 'Julio', tag: 'Mes -2', start: 1, end: 4 },
+  { name: 'Agosto', tag: 'Mes -1', start: 5, end: 8 },
+  { name: 'Septiembre', tag: 'Mes 0 · Lanzamiento', start: 9, end: 12 },
+  { name: 'Octubre', tag: 'Mes +1', start: 13, end: 16 }
+];
+
+// Detalle semana a semana
+const weeklyPlan = [
+  { w: 1, dates: '6–12 Jul', phase: 1, foco: 'Kickoff y arranque del análisis', hito: 'Kickoff del proyecto', entregables: ['Plan de trabajo y calendario detallado', 'Solicitud de accesos a App Store y Google Play'], avisos: ['Sin los accesos a las tiendas a tiempo, el track de apps de marca arranca con retraso.'] },
+  { w: 2, dates: '13–19 Jul', phase: 1, foco: 'Auditoría técnica y de tiendas', hito: null, entregables: ['Auditoría del estado de las cuentas en tiendas', 'Diagnóstico técnico inicial'], avisos: [] },
+  { w: 3, dates: '20–26 Jul', phase: 1, foco: 'Análisis de usuarios y dudas frecuentes', hito: null, entregables: ['Mapa de dudas frecuentes por tipo de usuario'], avisos: [] },
+  { w: 4, dates: '27 Jul–2 Ago', phase: 1, foco: 'Cierre del análisis y mapa de impacto', hito: 'Cierre del análisis (Go/No-Go de preparación)', entregables: ['Matriz de impacto por equipo', 'Plan de despliegue por grupos (borrador)'], avisos: ['Si el análisis no cierra a tiempo, las fases siguientes se comprimen.'] },
+  { w: 5, dates: '3–9 Ago', phase: 2, foco: 'Redacción de manuales y guías', hito: null, entregables: ['Primera versión de manuales y guías paso a paso'], avisos: [] },
+  { w: 6, dates: '10–16 Ago', phase: 2, foco: 'Kit de comunicación y vídeos', hito: null, entregables: ['Kit white-label de comunicación', 'Vídeos e instrucciones cortas'], avisos: [] },
+  { w: 7, dates: '17–23 Ago', phase: 2, foco: 'Formación de equipos (train the trainers)', hito: null, entregables: ['Sesiones de formación al equipo de atención'], avisos: ['Si el equipo de atención no se forma antes del cambio, las consultas se acumulan el Día D.'] },
+  { w: 8, dates: '24–30 Ago', phase: 2, foco: 'Materiales listos y ensayo del despliegue', hito: 'Equipos formados y materiales listos', entregables: ['Guía de respuestas rápidas', 'Plan de marcha atrás validado'], avisos: ['Conviene un ensayo del despliegue antes de septiembre.'] },
+  { w: 9, dates: '31 Ago–6 Sep', phase: 3, foco: 'Piloto interno y avisos in-app', hito: null, entregables: ['Migración del piloto interno (empleados propios)', 'Avisos in-app activados'], avisos: [] },
+  { w: 10, dates: '7–13 Sep', phase: 3, foco: 'Día D: inicio del cambio por grupos (10%)', hito: 'Día D — inicio del cambio por grupos (10%)', entregables: ['Sala de seguimiento en directo (war room)'], avisos: ['Abrir a todos a la vez puede saturar el sistema: el avance por grupos protege la experiencia.'] },
+  { w: 11, dates: '14–20 Sep', phase: 3, foco: 'Avance del despliegue (30%–60%)', hito: null, entregables: ['Informe diario de adopción y errores'], avisos: [] },
+  { w: 12, dates: '21–27 Sep', phase: 3, foco: 'Despliegue al 100% y apps de marca', hito: 'Cambio al 100% + apps de marca publicadas', entregables: ['Apps de marca publicadas en las tiendas'], avisos: ['Las apps de marca requieren aprobación independiente: dejar margen por si la tienda tarda.'] },
+  { w: 13, dates: '28 Sep–4 Oct', phase: 4, foco: 'Hypercare: soporte prioritario', hito: null, entregables: ['Soporte prioritario activo', 'Matriz de escalado de incidencias'], avisos: [] },
+  { w: 14, dates: '5–11 Oct', phase: 4, foco: 'Seguimiento de adopción', hito: null, entregables: ['Seguimiento de uso de la nueva versión'], avisos: [] },
+  { w: 15, dates: '12–18 Oct', phase: 4, foco: 'Encuestas y recogida de opiniones', hito: null, entregables: ['Encuestas de satisfacción (NPS)'], avisos: [] },
+  { w: 16, dates: '19–25 Oct', phase: 4, foco: 'Cierre del proyecto e informe final', hito: 'Cierre del proyecto e informe final', entregables: ['Informe de estabilidad técnica', 'Informe de adopción y satisfacción', 'Documentación de traspaso al equipo del cliente'], avisos: [] }
+];
+
+function initWeeklyCalendar() {
+  const container = document.getElementById('weeks-calendar');
+  if (!container) return;
+
+  let html = '';
+  calendarMonths.forEach(month => {
+    const weeks = weeklyPlan.filter(w => w.w >= month.start && w.w <= month.end);
+    html += `<div class="cal-month-group">
+      <div class="cal-month-head">
+        <span class="cal-month-name">${month.name}</span>
+        <span class="cal-month-tag">${month.tag}</span>
+      </div>
+      <div class="cal-week-cards">
+        ${weeks.map(week => `
+          <button class="cal-week-card phase-${week.phase}${week.hito ? ' has-milestone' : ''}" data-week="${week.w}" type="button">
+            <div class="cal-card-top">
+              <span class="cal-card-week">Semana ${week.w}</span>
+              <span class="cal-card-phase">Fase ${week.phase}</span>
+            </div>
+            <span class="cal-card-dates"><i class="bi bi-calendar3"></i> ${week.dates}</span>
+            <h4 class="cal-card-foco">${week.foco}</h4>
+            <div class="cal-card-footer">
+              ${week.hito ? '<span class="cal-card-milestone"><i class="bi bi-diamond-fill"></i> Hito</span>' : '<span></span>'}
+              <span class="cal-card-cta">Ver detalle <i class="bi bi-chevron-right"></i></span>
+            </div>
+          </button>
+        `).join('')}
+      </div>
+    </div>`;
+  });
+
+  container.innerHTML = html;
+
+  const cards = container.querySelectorAll('.cal-week-card');
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      cards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      renderWeekDetail(parseInt(card.getAttribute('data-week'), 10));
+
+      const detail = document.getElementById('calendar-week-detail');
+      if (detail && window.innerWidth <= 991) {
+        detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+  });
+
+  // Detalle inicial: la semana del Día D
+  const initial = container.querySelector('.cal-week-card[data-week="10"]') || cards[0];
+  if (initial) {
+    initial.classList.add('active');
+    renderWeekDetail(parseInt(initial.getAttribute('data-week'), 10));
+  }
+}
+
+function renderWeekDetail(weekNum) {
+  const panel = document.getElementById('calendar-week-detail');
+  const week = weeklyPlan.find(w => w.w === weekNum);
+  if (!panel || !week) return;
+
+  const month = calendarMonths.find(m => weekNum >= m.start && weekNum <= m.end);
+
+  const entregablesHtml = week.entregables.length
+    ? `<ul class="wd-list">${week.entregables.map(e => `<li>${e}</li>`).join('')}</ul>`
+    : '<p class="wd-empty">Sin entregables formales esta semana.</p>';
+
+  const avisosHtml = week.avisos.length
+    ? renderAvisos(week.avisos)
+    : '<p class="wd-empty">Sin puntos críticos esta semana.</p>';
+
+  const hitoHtml = week.hito
+    ? `<div class="wd-milestone"><i class="bi bi-diamond-fill"></i> <span>${week.hito}</span></div>`
+    : '';
+
+  panel.innerHTML = `
+    <div class="wd-content animate-fade">
+      <div class="wd-header">
+        <div class="wd-badge">
+          <span class="wd-week">Semana ${week.w}</span>
+          <span class="wd-dates">${week.dates}</span>
+        </div>
+        <div class="wd-meta">
+          <span class="wd-month">${month ? month.name + ' · ' + month.tag : ''}</span>
+          <span class="wd-phase">Fase ${week.phase}</span>
+        </div>
+      </div>
+      <h3 class="wd-foco">${week.foco}</h3>
+      ${hitoHtml}
+      <div class="wd-columns">
+        <div class="wd-section">
+          <h4><i class="bi bi-box-seam"></i> Qué se entrega</h4>
+          ${entregablesHtml}
+        </div>
+        <div class="wd-section">
+          <h4 class="avisos-title"><i class="bi bi-exclamation-triangle-fill"></i> Puntos de atención</h4>
+          ${avisosHtml}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* ==========================================================================
+   10. Estimación de recursos humanos (para presupuesto)
+   ========================================================================== */
+const resourceProfiles = [
+  {
+    role: 'Líder de proyecto y migración',
+    icon: 'bi-diagram-3-fill',
+    cls: 'tag-gov',
+    perfil: 'Dirige el proyecto y la parte técnica: coordina con el cliente, prepara y lanza el cambio por grupos, gestiona las tiendas y vigila la estabilidad.',
+    entregables: [
+      'Plan de trabajo, calendario y coordinación (war room)',
+      'Plan de despliegue por grupos y marcha atrás',
+      'Publicación en App Store y Google Play (incl. apps de marca)',
+      'Monitoreo en directo e informe final de estabilidad'
+    ]
+  },
+  {
+    role: 'Consultor de gestión del cambio',
+    icon: 'bi-chat-left-dots-fill',
+    cls: 'tag-soporte',
+    perfil: 'Se ocupa de cómo viven el cambio las personas: comunicación a usuarios y empresas, avisos, acompañamiento a los equipos del cliente y medición de la adopción.',
+    entregables: [
+      'Kit white-label de comunicación y avisos in-app',
+      'Plan de avisos por canal y a las empresas cliente',
+      'Encuestas de adopción (NPS) e informe de satisfacción'
+    ]
+  },
+  {
+    role: 'Especialista en contenidos y formación',
+    icon: 'bi-journal-text',
+    cls: 'tag-ti',
+    perfil: 'Crea y mantiene todo el material de ayuda: manuales, guías, vídeos e instrucciones, y forma al equipo de atención del cliente.',
+    entregables: [
+      'Manuales, guías, vídeos e instrucciones',
+      'Centro de ayuda y FAQs actualizado',
+      'Formación al equipo de atención (train the trainers)'
+    ]
+  }
+];
+
+function initResourcesEstimate() {
+  const summary = document.getElementById('resources-summary');
+  const grid = document.getElementById('resources-grid');
+  if (!summary || !grid) return;
+
+  const perWeek = (resourceProfiles.length * 0.5).toFixed(1).replace('.', ','); // ≈ 1,5
+
+  const summaryItems = [
+    { value: resourceProfiles.length, label: 'Perfiles', icon: 'bi-people-fill' },
+    { value: '½', label: 'Media jornada cada uno', icon: 'bi-clock-history' },
+    { value: 'Todo el plan', label: 'De principio a fin', icon: 'bi-calendar3', small: true },
+    { value: perWeek, label: 'Recursos por semana', icon: 'bi-person-workspace' }
+  ];
+
+  summary.innerHTML = summaryItems.map(item => `
+    <div class="res-summary-card">
+      <i class="bi ${item.icon}"></i>
+      <span class="res-summary-value${item.small ? ' res-summary-value-sm' : ''}">${item.value}</span>
+      <span class="res-summary-label">${item.label}</span>
+    </div>
+  `).join('');
+
+  grid.innerHTML = resourceProfiles.map(p => `
+    <div class="resource-card">
+      <div class="resource-card-top">
+        <div class="resource-icon ${p.cls}"><i class="bi ${p.icon}"></i></div>
+        <span class="resource-dedication"><i class="bi bi-clock-history"></i> Media jornada</span>
+      </div>
+      <h3 class="resource-role">${p.role}</h3>
+      <p class="resource-perfil">${p.perfil}</p>
+      <div class="resource-meta">
+        <span class="resource-chip"><i class="bi bi-calendar3"></i> Durante todo el plan</span>
+      </div>
+      <div class="resource-deliverables">
+        <span class="rd-title">Entregables que asume</span>
+        <ul>${p.entregables.map(e => `<li>${e}</li>`).join('')}</ul>
+      </div>
+    </div>
+  `).join('');
 }

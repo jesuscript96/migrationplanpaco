@@ -43,10 +43,12 @@
         <span class="proposal-badge">PLAN DE CAMBIO</span>
       </a>
       <div class="nav-links">
-        <a href="#fases" class="nav-link">Fases del Plan</a>
-        <a href="#equipos" class="nav-link">Plan por Equipos</a>
-        <a href="#entregables" class="nav-link">Qué Entregamos</a>
+        <a href="#fases" class="nav-link">Fases</a>
+        <a href="#calendario" class="nav-link">Calendario</a>
+        <a href="#equipos" class="nav-link">Equipos</a>
+        <a href="#entregables" class="nav-link">Entregables</a>
         <a href="#modulos" class="nav-link">Cómo Trabajamos</a>
+        <a href="#recursos" class="nav-link">Recursos</a>
       </div>
       <div class="nav-actions">
         <a href="#equipos" class="nav-btn-action" id="action-cta">Ver el plan por equipos</a>
@@ -59,10 +61,12 @@
     <!-- Mobile Menu Overlay -->
     <div class="mobile-menu" id="mobile-menu-overlay">
       <a href="#fases" class="mobile-link">Fases del Plan</a>
+      <a href="#calendario" class="mobile-link">Calendario</a>
       <a href="#equipos" class="mobile-link">Plan por Equipos</a>
       <a href="#entregables" class="mobile-link">Qué Entregamos</a>
       <a href="#modulos" class="mobile-link">Cómo Trabajamos</a>
-      <a href="#equipos" class="mobile-btn" id="mobile-action-cta">Ver el plan por equipos</a>
+      <a href="#recursos" class="mobile-link">Equipo y Recursos</a>
+      <a href="#calendario" class="mobile-btn" id="mobile-action-cta">Ver el calendario</a>
     </div>
   </nav>
 
@@ -109,7 +113,7 @@
   <main class="main-content">
 
     <!-- Section 1: Fases del Plan (qué analizamos, fechas y avisos) -->
-    <section class="section phases-section" id="fases">
+    <section class="section phases-section collapsible-section" id="fases">
       <div class="container-width">
         <div class="section-header">
           <span class="section-tag">Calendario del Plan</span>
@@ -181,8 +185,31 @@
       </div>
     </section>
 
+    <!-- Section: Calendario semana a semana -->
+    <section class="section calendar-section collapsible-section" id="calendario">
+      <div class="container-width">
+        <div class="section-header">
+          <span class="section-tag">Calendario semana a semana</span>
+          <h2 class="section-title">El plan, semana a semana hasta el lanzamiento</h2>
+          <p class="section-subtitle">
+            La nueva versión sale en <strong>septiembre</strong>. Este es el calendario completo, semana a semana: el foco de cada una, los hitos a cumplir y lo que se entrega. <strong>Pulsa cualquier tarjeta</strong> para ver su detalle.
+          </p>
+        </div>
+
+        <!-- Calendario por semanas (tarjetas agrupadas por mes) -->
+        <div class="weeks-calendar" id="weeks-calendar">
+          <!-- Generado por JS -->
+        </div>
+
+        <!-- Detalle de la semana seleccionada -->
+        <div class="calendar-week-detail" id="calendar-week-detail">
+          <!-- Generado por JS -->
+        </div>
+      </div>
+    </section>
+
     <!-- Section 2: El plan de cada equipo (centro del planteamiento) -->
-    <section class="section cross-impact-section" id="equipos">
+    <section class="section cross-impact-section collapsible-section" id="equipos">
       <div class="container-width">
         <div class="section-header">
           <span class="section-tag">El plan de cada equipo</span>
@@ -238,7 +265,7 @@
     </section>
 
     <!-- Section 3: Qué entregamos (materiales que nacen del análisis) -->
-    <section class="section deliverables-section" id="entregables">
+    <section class="section deliverables-section collapsible-section" id="entregables">
       <div class="container-width">
         <div class="section-header">
           <span class="section-tag">Lo que entregamos</span>
@@ -304,7 +331,7 @@
     </section>
 
     <!-- Section 4: Cómo trabajamos (áreas de trabajo) -->
-    <section class="section modules-section" id="modulos">
+    <section class="section modules-section collapsible-section" id="modulos">
       <div class="container-width">
         <div class="section-header">
           <span class="section-tag">Cómo trabajamos</span>
@@ -446,6 +473,35 @@
             </div>
           </div>
 
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Equipo y recursos (estimación para presupuesto) -->
+    <section class="section resources-section collapsible-section" id="recursos">
+      <div class="container-width">
+        <div class="section-header">
+          <span class="section-tag">Equipo y recursos</span>
+          <h2 class="section-title">El equipo necesario para sacar esto adelante</h2>
+          <p class="section-subtitle">
+            Para sacar esto adelante necesitamos <strong>3 perfiles a media jornada durante todo el plan</strong>, lo que supone <strong>1,5 recursos cada semana</strong>. Aquí tienes qué hace cada uno y los entregables que asume. Es la base para presupuestar.
+          </p>
+        </div>
+
+        <!-- Resumen de recursos -->
+        <div class="resources-summary" id="resources-summary">
+          <!-- Generado por JS -->
+        </div>
+
+        <!-- Tarjetas por perfil -->
+        <div class="resources-grid" id="resources-grid">
+          <!-- Generado por JS -->
+        </div>
+
+        <!-- Nota de alcance de la estimación -->
+        <div class="scope-note resources-note">
+          <i class="bi bi-info-circle-fill"></i>
+          <p>Cada perfil trabaja a <strong>media jornada durante todo el plan</strong>; entre los tres suman <strong>1,5 recursos por semana</strong>. No incluye el desarrollo de la nueva versión de la app, ya comprometido aparte, ni el diseño gráfico de las piezas.</p>
         </div>
       </div>
     </section>
