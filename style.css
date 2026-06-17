@@ -186,41 +186,57 @@ body {
   border: 1px solid rgba(81, 118, 243, 0.15);
 }
 
-.proposal-consultoria .proposal-badge {
-  background-color: #f0fdf4;
-  color: #047857;
-  border-color: rgba(4, 120, 87, 0.2);
-}
-
-.nav-actions {
-  display: flex;
+.proposal-switcher {
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  padding: 5px 6px 5px 14px;
+  margin-bottom: 28px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--color-border);
+  border-radius: 30px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
 
-.nav-actions .nav-btn-secondary {
+.proposal-switcher-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.proposal-switcher-tabs {
+  display: inline-flex;
+  gap: 4px;
+  padding: 3px;
+  background-color: #f4f4f5;
+  border-radius: 24px;
+}
+
+.proposal-tab {
   text-decoration: none;
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-text-main);
-  padding: 8px 16px;
-  border-radius: 30px;
-  border: 1px solid var(--color-border);
-  background-color: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-muted);
+  padding: 7px 16px;
+  border-radius: 20px;
   transition: var(--transition-smooth);
   white-space: nowrap;
 }
 
-.nav-actions .nav-btn-secondary:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background-color: var(--color-primary-light);
+.proposal-tab:hover {
+  color: var(--color-text-main);
 }
 
-.proposal-consultoria .nav-actions .nav-btn-secondary:hover {
-  border-color: #047857;
-  color: #047857;
-  background-color: #f0fdf4;
+.proposal-tab.active {
+  background-color: #000;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.proposal-consultoria .proposal-tab.active {
+  background-color: #047857;
+  box-shadow: 0 2px 8px rgba(4, 120, 87, 0.25);
 }
 
 .nav-links {
@@ -2455,6 +2471,25 @@ body {
   .hero {
     padding-top: 140px;
     padding-bottom: 60px;
+  }
+
+  .proposal-switcher {
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    width: calc(100% - 32px);
+    max-width: 320px;
+  }
+
+  .proposal-switcher-tabs {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .proposal-tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px 12px;
   }
 
   .hero-buttons {
