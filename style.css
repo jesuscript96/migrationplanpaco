@@ -186,6 +186,43 @@ body {
   border: 1px solid rgba(81, 118, 243, 0.15);
 }
 
+.proposal-consultoria .proposal-badge {
+  background-color: #f0fdf4;
+  color: #047857;
+  border-color: rgba(4, 120, 87, 0.2);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-actions .nav-btn-secondary {
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-main);
+  padding: 8px 16px;
+  border-radius: 30px;
+  border: 1px solid var(--color-border);
+  background-color: rgba(255, 255, 255, 0.8);
+  transition: var(--transition-smooth);
+  white-space: nowrap;
+}
+
+.nav-actions .nav-btn-secondary:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.proposal-consultoria .nav-actions .nav-btn-secondary:hover {
+  border-color: #047857;
+  color: #047857;
+  background-color: #f0fdf4;
+}
+
 .nav-links {
   display: flex;
   gap: 4px;
